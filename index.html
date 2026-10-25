@@ -120,6 +120,20 @@ h2 .aside { font-family: var(--font-body); font-size: 13px; font-weight: 500; co
 .chart-x { display: flex; gap: 6px; padding-left: 56px; margin-top: 6px; }
 .chart-x span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); min-width: 0; overflow: hidden; }
 
+.pie { display: flex; flex-wrap: wrap; gap: 16px 20px; align-items: center; position: relative; }
+.pie svg { width: 180px; height: 180px; flex: none; max-width: 100%; overflow: visible; }
+.pie path { stroke: var(--surface); stroke-width: 2; cursor: pointer; transition: opacity .15s, transform .15s; transform-origin: 100px 100px; }
+.pie path:hover, .pie path:focus-visible { transform: scale(1.04); outline: none; }
+.pie svg:hover path:not(:hover) { opacity: .55; }
+.pie text { pointer-events: none; }
+.pie .ctr-l { font-size: 11px; fill: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.pie .ctr-v { font-family: var(--font-display); font-size: 20px; font-weight: 700; fill: var(--fg); }
+.pie .legend { flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pie .legend .catrow { padding: 5px 8px; grid-template-columns: minmax(0, 1fr) auto; }
+.pie .legend .catrow .name span:last-child { white-space: normal; }
+.pie .legend .catrow.static { cursor: default; }
+.pie .legend .catrow.static:hover { background: none; }
+.pie-tip { position: absolute; pointer-events: none; background: var(--fg); color: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: 13px; white-space: nowrap; z-index: 5; transform: translate(-50%, calc(-100% - 10px)); }
 .callout { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 14px 16px; border-radius: 12px; background: var(--warn-bg); color: var(--warn-fg); margin-bottom: 20px; }
 .callout p { margin: 0; flex: 1 1 240px; }
 
@@ -601,11 +615,63 @@ function renderOverview() {
           </button>`; }).join("")}</div>` : `<p class="empty">Inga utgifter ${state.period === "all" ? "än" : "den här månaden"}.</p>`}
       </section>
       <div class="stack">
+        <section class="panel">${pieChart(rows, spent, periodName)}</section>
         <section class="panel">${monthChart()}</section>
         <section class="panel">${biggest(list)}</section>
       </div>
     </div>`;
 }
+// Pie (donut) chart of spending per category. Categories past the 7 largest fold into "Övrigt".
+function pieChart(rows, spent, periodName) {
+  const head = `<h2>Fördelning <span class="aside">${esc(periodName)}</span></h2>`;
+  const total = rows.reduce((s, [, v]) => s + v, 0);
+  if (!total) return head + `<p class="empty">Inga utgifter att visa.</p>`;
+  let slices = rows.map(([id, v]) => { const c = catById(id) || catById("uncategorized"); return { id, name: c.name, color: c.color, v }; });
+  if (slices.length > 8) {
+    const rest = slices.slice(7);
+    slices = slices.slice(0, 7).concat({ id: null, name: "Övrigt", tip: `Övrigt (${rest.length} mindre kategorier)`, color: "#9aa5a0", v: rest.reduce((s, x) => s + x.v, 0) });
+  }
+  const R = 92, r = 56, cx = 100, cy = 100;
+  const pt = (rad, a) => [cx + rad * Math.sin(a), cy - rad * Math.cos(a)];
+  const arc = (a0, a1) => {
+    if (a1 - a0 >= Math.PI * 2 - 1e-6) a1 = a0 + Math.PI * 2 - 1e-4;
+    const big = a1 - a0 > Math.PI ? 1 : 0;
+    const [x0, y0] = pt(R, a0), [x1, y1] = pt(R, a1), [x2, y2] = pt(r, a1), [x3, y3] = pt(r, a0);
+    return `M${x0.toFixed(2)},${y0.toFixed(2)}A${R},${R} 0 ${big} 1 ${x1.toFixed(2)},${y1.toFixed(2)}L${x2.toFixed(2)},${y2.toFixed(2)}A${r},${r} 0 ${big} 0 ${x3.toFixed(2)},${y3.toFixed(2)}Z`;
+  };
+  let a = 0;
+  const pct = v => Math.round((v / total) * 100);
+  const paths = slices.map(sl => {
+    const a1 = a + (sl.v / total) * Math.PI * 2;
+    const d = arc(a, a1); a = a1;
+    const label = `${sl.tip || sl.name}: ${fmt0.format(sl.v)} (${pct(sl.v)} %)`;
+    return `<path d="${d}" fill="${sl.color}" ${sl.id ? `data-cat="${sl.id}" tabindex="0" role="button"` : ""} data-tip="${esc(label)}" aria-label="${esc(label)}"></path>`;
+  }).join("");
+  return head + `<div class="pie">
+    <svg viewBox="0 0 200 200" role="img" aria-label="Tårtdiagram över utgifter per kategori">${paths}
+      <text x="100" y="94" text-anchor="middle" class="ctr-l">Totalt</text>
+      <text x="100" y="116" text-anchor="middle" class="ctr-v">${fmtShort.format(Math.round(total))} kr</text>
+    </svg>
+    <div class="legend">${slices.map(sl => `
+      <${sl.id ? `button type="button" data-cat="${sl.id}"` : `div`} class="catrow ${sl.id ? "" : "static"}">
+        <span class="name"><span class="dot" style="background:${sl.color}"></span><span>${esc(sl.name)}</span></span>
+        <span class="amt num">${pct(sl.v)} %</span>
+      </${sl.id ? "button" : "div"}>`).join("")}</div>
+  </div>`;
+}
+document.addEventListener("pointermove", e => {
+  const path = e.target.closest?.(".pie path");
+  let tip = document.querySelector(".pie-tip");
+  if (!path) { tip?.remove(); return; }
+  const box = path.closest(".pie");
+  if (!tip || tip.parentNode !== box) { tip?.remove(); tip = document.createElement("div"); tip.className = "pie-tip"; box.appendChild(tip); }
+  tip.textContent = path.dataset.tip;
+  const b = box.getBoundingClientRect();
+  tip.style.left = (e.clientX - b.left) + "px"; tip.style.top = (e.clientY - b.top) + "px";
+});
+document.addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".pie path[data-cat]")) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", { bubbles: true })); }
+});
 function niceMax(v) {
   if (v <= 0) return 1000;
   const p = Math.pow(10, Math.floor(Math.log10(v)));
