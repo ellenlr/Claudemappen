@@ -192,20 +192,20 @@ td.a, th.a { text-align: right; white-space: nowrap; }
 
 <div class="shell">
   <header class="top">
-    <div class="brand"><span class="mark" aria-hidden="true"></span><h1>Pengakoll</h1><small>Where did the money go?</small></div>
+    <div class="brand"><span class="mark" aria-hidden="true"></span><h1>Pengakoll</h1><small>Vart tog pengarna vägen?</small></div>
     <div class="top-actions">
       <select class="sel" id="period" aria-label="Period"></select>
       <button class="btn primary" id="uploadBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 11V2m0 0L4.5 5.5M8 2l3.5 3.5M2.5 10.5v2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Upload transactions
+        Ladda upp transaktioner
       </button>
       <input type="file" id="fileInput" accept=".csv,.txt,.xlsx,.xls,.json" multiple hidden>
     </div>
   </header>
   <nav class="tabs" role="tablist">
-    <button role="tab" id="tab-overview" data-view="overview" aria-selected="true">Overview</button>
-    <button role="tab" id="tab-tx" data-view="tx" aria-selected="false">Transactions <span class="count" id="txCount"></span></button>
-    <button role="tab" id="tab-cats" data-view="cats" aria-selected="false">Categories &amp; settings</button>
+    <button role="tab" id="tab-overview" data-view="overview" aria-selected="true">Översikt</button>
+    <button role="tab" id="tab-tx" data-view="tx" aria-selected="false">Transaktioner <span class="count" id="txCount"></span></button>
+    <button role="tab" id="tab-cats" data-view="cats" aria-selected="false">Kategorier &amp; inställningar</button>
   </nav>
   <div id="banner"></div>
   <main id="view"></main>
@@ -218,25 +218,27 @@ td.a, th.a { text-align: right; white-space: nowrap; }
 // ---------- Default categories and Swedish merchant keywords ----------
 // Keyword ending in * matches as a prefix (TANDLAK* matches TANDLAKARE). Categories are checked in this order.
 const DEFAULT_CATS = [
-  { id: "groceries", name: "Groceries", color: "#3f9b5a" },
-  { id: "restaurants", name: "Restaurants & cafés", color: "#e07b39" },
-  { id: "transport", name: "Transport & fuel", color: "#3b7dd8" },
-  { id: "travel", name: "Travel & hotels", color: "#14a3b8" },
-  { id: "housing", name: "Housing & bills", color: "#6b5bd2" },
-  { id: "subscriptions", name: "Subscriptions", color: "#c2459b" },
-  { id: "clothes", name: "Clothes & shoes", color: "#d4a017" },
-  { id: "beauty", name: "Beauty & makeup", color: "#e2557a" },
-  { id: "health", name: "Health & fitness", color: "#2e9e8f" },
-  { id: "dental", name: "Dental", color: "#7aa6e8" },
-  { id: "home", name: "Home & furniture", color: "#9a6b3f" },
-  { id: "shopping", name: "Shopping & electronics", color: "#8a8f2a" },
-  { id: "entertainment", name: "Entertainment", color: "#a35bd6" },
+  { id: "groceries", name: "Mat & livsmedel", color: "#3f9b5a" },
+  { id: "restaurants", name: "Restaurang & café", color: "#e07b39" },
+  { id: "transport", name: "Transport & bränsle", color: "#3b7dd8" },
+  { id: "travel", name: "Resor & hotell", color: "#14a3b8" },
+  { id: "housing", name: "Boende & räkningar", color: "#6b5bd2" },
+  { id: "subscriptions", name: "Prenumerationer", color: "#c2459b" },
+  { id: "clothes", name: "Kläder & skor", color: "#d4a017" },
+  { id: "beauty", name: "Skönhet & smink", color: "#e2557a" },
+  { id: "health", name: "Hälsa & träning", color: "#2e9e8f" },
+  { id: "dental", name: "Tandvård", color: "#7aa6e8" },
+  { id: "home", name: "Hem & inredning", color: "#9a6b3f" },
+  { id: "shopping", name: "Shopping & elektronik", color: "#8a8f2a" },
+  { id: "entertainment", name: "Nöje", color: "#a35bd6" },
   { id: "alcohol", name: "Systembolaget", color: "#b5483e" },
-  { id: "transfers", name: "Swish & transfers", color: "#7d8b86" },
-  { id: "income", name: "Income", color: "#24794a", income: true },
-  { id: "ignored", name: "Not counted", color: "#a7b0ac", ignore: true },
-  { id: "uncategorized", name: "Uncategorized", color: "#c9a227", fixed: true },
+  { id: "transfers", name: "Swish & överföringar", color: "#7d8b86" },
+  { id: "income", name: "Inkomster", color: "#24794a", income: true },
+  { id: "ignored", name: "Räknas inte", color: "#a7b0ac", ignore: true },
+  { id: "uncategorized", name: "Okategoriserat", color: "#c9a227", fixed: true },
 ];
+// Names the categories had in the first, English version, so saved data gets the Swedish names
+const OLD_NAMES = { groceries: "Groceries", restaurants: "Restaurants & cafés", transport: "Transport & fuel", travel: "Travel & hotels", housing: "Housing & bills", subscriptions: "Subscriptions", clothes: "Clothes & shoes", beauty: "Beauty & makeup", health: "Health & fitness", dental: "Dental", home: "Home & furniture", shopping: "Shopping & electronics", entertainment: "Entertainment", transfers: "Swish & transfers", income: "Income", ignored: "Not counted", uncategorized: "Uncategorized" };
 const KEYWORDS = {
   subscriptions: "SPOTIFY|NETFLIX|HBO|HBO MAX|VIAPLAY|DISNEY*|APPLE COM|ITUNES|GOOGLE PLAY|YOUTUBE|AUDIBLE|STORYTEL|BOOKBEAT|NEXTORY|TV4*|CMORE|AMAZON PRIME|PRIME VIDEO|CHATGPT|OPENAI|ANTHROPIC|CLAUDE AI|ADOBE|MICROSOFT*|DROPBOX|ICLOUD|PATREON|DAGENS NYHETER|SVENSKA DAGBLADET|AFTONBLADET|EXPRESSEN|SKYSHOWTIME|DUOLINGO",
   dental: "TANDLAK*|TANDVARD*|FOLKTANDVARD*|TANDHYG*|DENTAL*|COLOSSEUM*|SMILE*|TANDKLINIK*|TANDREGLERING*",
@@ -310,10 +312,10 @@ function uid() { return Date.now().toString(36) + Math.random().toString(36).sli
 const fmt0 = new Intl.NumberFormat("sv-SE", { style: "currency", currency: "SEK", maximumFractionDigits: 0 });
 const fmt2 = new Intl.NumberFormat("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtShort = new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 });
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
 function monthLabel(ym, long) {
   const [y, m] = ym.split("-");
-  return long ? new Date(+y, +m - 1, 1).toLocaleString("en-GB", { month: "long", year: "numeric" }) : MONTHS[+m - 1] + (long === false ? "" : " " + y.slice(2));
+  return long ? (t => t[0].toUpperCase() + t.slice(1))(new Date(+y, +m - 1, 1).toLocaleString("sv-SE", { month: "long", year: "numeric" })) : MONTHS[+m - 1] + (long === false ? "" : " " + y.slice(2));
 }
 function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 
@@ -386,10 +388,10 @@ function analyzeRows(rows) {
     const kinds = ["date", "desc", "amount"].filter(k => rows[i].some(c => typeof c === "string" && headScore(c, k) > 0));
     if (kinds.length >= 2) { headerIdx = i; break; }
   }
-  const header = headerIdx >= 0 ? rows[headerIdx].map((c, i) => String(c ?? "").trim() || "Column " + (i + 1)) : null;
+  const header = headerIdx >= 0 ? rows[headerIdx].map((c, i) => String(c ?? "").trim() || "Kolumn " + (i + 1)) : null;
   const body = rows.slice(headerIdx + 1);
   const width = Math.max(...rows.slice(0, 50).map(r => r.length), 1);
-  const cols = header || Array.from({ length: width }, (_, i) => "Column " + (i + 1));
+  const cols = header || Array.from({ length: width }, (_, i) => "Kolumn " + (i + 1));
   const sample = body.slice(0, 80);
   const pick = (kind, exclude) => {
     if (!header) return -1;
@@ -418,7 +420,7 @@ function analyzeRows(rows) {
 async function readFileRows(file) {
   const buf = await file.arrayBuffer();
   if (/\.(xlsx|xls)$/i.test(file.name)) {
-    if (typeof XLSX === "undefined") throw new Error("The Excel reader didn't load. Check your connection, or save the file as CSV and upload that.");
+    if (typeof XLSX === "undefined") throw new Error("Excel-läsaren kunde inte laddas. Kontrollera din anslutning, eller spara filen som CSV och ladda upp den.");
     const wb = XLSX.read(buf, { type: "array", cellDates: true });
     let best = null;
     for (const name of wb.SheetNames) {
@@ -431,7 +433,7 @@ async function readFileRows(file) {
   try { text = new TextDecoder("utf-8", { fatal: true }).decode(buf); }
   catch { text = new TextDecoder("windows-1252").decode(buf); }
   text = text.replace(/^﻿/, "");
-  if (typeof Papa === "undefined") throw new Error("The CSV reader didn't load. Check your connection and try again.");
+  if (typeof Papa === "undefined") throw new Error("CSV-läsaren kunde inte laddas. Kontrollera din anslutning och försök igen.");
   const res = Papa.parse(text, { skipEmptyLines: true, delimitersToGuess: [";", ",", "\t", "|"] });
   return res.data;
 }
@@ -444,10 +446,10 @@ async function handleFiles(files) {
     try {
       const rows = await readFileRows(f);
       const a = analyzeRows(rows);
-      if (!a.body.length) { toast(`Couldn't find any rows in ${f.name}.`); continue; }
+      if (!a.body.length) { toast(`Hittade inga rader i ${f.name}.`); continue; }
       queue.push({ file: f.name, ...a });
     } catch (e) {
-      toast(`Couldn't read ${f.name}: ${e.message || e}`);
+      toast(`Kunde inte läsa ${f.name}: ${e.message || e}`);
     }
   }
   if (queue.length && !document.querySelector(".overlay")) showMapping();
@@ -473,25 +475,25 @@ function showMapping() {
     const parsed = buildTx(job);
     const prev = parsed.slice(0, 5);
     modal(`
-      <h3>Import ${esc(job.file)}</h3>
-      <p class="hint">We guessed which columns hold what. Check the preview and fix anything that looks off.${queue.length > 1 ? ` (${queue.length - 1} more file${queue.length > 2 ? "s" : ""} after this one.)` : ""}</p>
+      <h3>Importera ${esc(job.file)}</h3>
+      <p class="hint">Vi har gissat vilka kolumner som innehåller vad. Kolla förhandsvisningen och ändra om något ser fel ut.${queue.length > 1 ? ` (${queue.length - 1} fil${queue.length > 2 ? "er" : ""} till efter den här.)` : ""}</p>
       <div class="maprow">
-        <label>Date<select class="sel" id="mapDate">${opts(job.map.date)}</select></label>
-        <label>Description<select class="sel" id="mapDesc">${opts(job.map.desc)}</select></label>
-        <label>Amount<select class="sel" id="mapAmount">${opts(job.map.amount)}</select></label>
+        <label>Datum<select class="sel" id="mapDate">${opts(job.map.date)}</select></label>
+        <label>Beskrivning<select class="sel" id="mapDesc">${opts(job.map.desc)}</select></label>
+        <label>Belopp<select class="sel" id="mapAmount">${opts(job.map.amount)}</select></label>
       </div>
       <div class="radio">
-        <label><input type="radio" name="sign" id="signBank" value="bank" ${job.sign === "bank" ? "checked" : ""}> <span><b>Bank account export</b>: purchases are minus amounts (Swedbank, Nordea, SEB, Handelsbanken…)</span></label>
-        <label><input type="radio" name="sign" id="signCard" value="card" ${job.sign === "card" ? "checked" : ""}> <span><b>Credit card statement</b>: purchases are plus amounts (Amex, some card invoices)</span></label>
+        <label><input type="radio" name="sign" id="signBank" value="bank" ${job.sign === "bank" ? "checked" : ""}> <span><b>Export från bankkonto</b>: köp har minusbelopp (Swedbank, Nordea, SEB, Handelsbanken…)</span></label>
+        <label><input type="radio" name="sign" id="signCard" value="card" ${job.sign === "card" ? "checked" : ""}> <span><b>Kreditkortsfaktura</b>: köp har plusbelopp (Amex, vissa kortfakturor)</span></label>
       </div>
       <div class="preview"><table>
-        <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="a">Amount</th></tr></thead>
-        <tbody>${prev.length ? prev.map(t => { const c = catById(autoCategory(t.t, t.a)); return `<tr><td class="num">${t.d}</td><td>${esc(t.t)}</td><td><span class="dot" style="background:${c.color}"></span> ${esc(c.name)}</td><td class="a num ${t.a < 0 ? "" : "pos"}">${fmt2.format(t.a)}</td></tr>`; }).join("") : `<tr><td colspan="4" class="empty">No rows could be read with these columns. Try picking different ones.</td></tr>`}</tbody>
+        <thead><tr><th>Datum</th><th>Beskrivning</th><th>Kategori</th><th class="a">Belopp</th></tr></thead>
+        <tbody>${prev.length ? prev.map(t => { const c = catById(autoCategory(t.t, t.a)); return `<tr><td class="num">${t.d}</td><td>${esc(t.t)}</td><td><span class="dot" style="background:${c.color}"></span> ${esc(c.name)}</td><td class="a num ${t.a < 0 ? "" : "pos"}">${fmt2.format(t.a)}</td></tr>`; }).join("") : `<tr><td colspan="4" class="empty">Inga rader kunde läsas med de här kolumnerna. Prova att välja andra.</td></tr>`}</tbody>
       </table></div>
-      <p class="hint">${parsed.length} of ${job.body.length} rows will be imported. Transactions you've already imported are skipped automatically.</p>
+      <p class="hint">${parsed.length} av ${job.body.length} rader importeras. Transaktioner du redan har importerat hoppas över automatiskt.</p>
       <div class="modal-actions">
-        <button class="btn" id="mapSkip" type="button">${queue.length > 1 ? "Skip this file" : "Cancel"}</button>
-        <button class="btn primary" id="mapGo" type="button" ${parsed.length ? "" : "disabled"}>Import ${parsed.length} transactions</button>
+        <button class="btn" id="mapSkip" type="button">${queue.length > 1 ? "Hoppa över filen" : "Avbryt"}</button>
+        <button class="btn primary" id="mapGo" type="button" ${parsed.length ? "" : "disabled"}>Importera ${parsed.length} transaktioner</button>
       </div>`);
     const on = (id, fn) => document.getElementById(id).addEventListener("change", fn);
     on("mapDate", e => { job.map.date = +e.target.value; render(); });
@@ -521,7 +523,7 @@ function commitImport(parsed, fileName) {
   state.period = "all";
   scheduleSave();
   render();
-  toast(`Imported ${added} transactions from ${fileName}` + (skipped ? `, skipped ${skipped} already there` : "") + (unc ? `. ${unc} need a category.` : "."));
+  toast(`Importerade ${added} transaktioner från ${fileName}` + (skipped ? `, hoppade över ${skipped} som redan fanns` : "") + (unc ? `. ${unc} behöver en kategori.` : "."));
 }
 
 // ---------- Aggregation ----------
@@ -557,17 +559,17 @@ function renderPeriod() {
   const el = document.getElementById("period");
   const ms = months();
   if (state.period !== "all" && !ms.includes(state.period)) state.period = "all";
-  el.innerHTML = `<option value="all">All time</option>` + ms.map(m => `<option value="${m}">${monthLabel(m, true)}</option>`).join("");
+  el.innerHTML = `<option value="all">Hela perioden</option>` + ms.map(m => `<option value="${m}">${monthLabel(m, true)}</option>`).join("");
   el.value = state.period;
 }
 function renderBanner() {
   const el = document.getElementById("banner");
-  if (state.loading) { el.innerHTML = `<div class="banner info"><p>Opening your saved transactions…</p></div>`; return; }
-  el.innerHTML = state.isExample ? `<div class="banner"><p><b>These are example transactions.</b> Upload a CSV or Excel export from your bank or card and they'll be replaced with your own.</p><button class="btn" type="button" data-act="upload">Upload my transactions</button></div>` : "";
+  if (state.loading) { el.innerHTML = `<div class="banner info"><p>Hämtar dina sparade transaktioner…</p></div>`; return; }
+  el.innerHTML = state.isExample ? `<div class="banner"><p><b>Det här är exempeltransaktioner.</b> Ladda upp en CSV- eller Excel-fil från din bank eller ditt kort så ersätts de med dina egna.</p><button class="btn" type="button" data-act="upload">Ladda upp mina transaktioner</button></div>` : "";
 }
 const UPLOAD_ICON = `<svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 11V2m0 0L4.5 5.5M8 2l3.5 3.5M2.5 10.5v2a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 function dropZone() {
-  return `<div class="drop" id="drop"><div class="icon">${UPLOAD_ICON}</div><div class="txt"><strong>Drop bank or card files here</strong><span>CSV or Excel from Swedbank, Nordea, SEB, Handelsbanken, ICA Banken, Länsförsäkringar, Amex, Revolut and others. Several files at once is fine.</span></div><button class="btn" type="button" data-act="upload">Choose files</button></div>`;
+  return `<div class="drop" id="drop"><div class="icon">${UPLOAD_ICON}</div><div class="txt"><strong>Släpp filer från bank eller kort här</strong><span>CSV eller Excel från Swedbank, Nordea, SEB, Handelsbanken, ICA Banken, Länsförsäkringar, Amex, Revolut med flera. Det går bra med flera filer samtidigt.</span></div><button class="btn" type="button" data-act="upload">Välj filer</button></div>`;
 }
 function renderOverview() {
   const list = state.tx.filter(inPeriod);
@@ -576,27 +578,27 @@ function renderOverview() {
   const rows = [...byCat.entries()].filter(([, v]) => v > 0.5).sort((a, b) => b[1] - a[1]);
   const max = rows.length ? rows[0][1] : 1;
   const unc = list.filter(t => t.c === "uncategorized" || !catById(t.c));
-  const periodName = state.period === "all" ? "all time" : monthLabel(state.period, true);
+  const periodName = state.period === "all" ? "hela perioden" : monthLabel(state.period, true);
   const nMonths = state.period === "all" ? Math.max(months().length, 1) : 1;
   viewEl.innerHTML = `
     ${dropZone()}
-    ${unc.length ? `<div class="callout"><p><b>${unc.length} transaction${unc.length > 1 ? "s" : ""}</b> ${unc.length > 1 ? "need" : "needs"} a category (${fmt0.format(-unc.reduce((s, t) => s + t.a, 0))}).</p>
-      <button class="btn" type="button" data-act="show-unc">Sort them myself</button>
-      ${sampleApi ? `<button class="btn primary" type="button" data-act="ai">Let Claude sort them</button>` : ""}</div>` : ""}
+    ${unc.length ? `<div class="callout"><p><b>${unc.length} ${unc.length > 1 ? "transaktioner" : "transaktion"}</b> behöver en kategori (${fmt0.format(-unc.reduce((s, t) => s + t.a, 0))}).</p>
+      <button class="btn" type="button" data-act="show-unc">Sortera själv</button>
+      ${sampleApi ? `<button class="btn primary" type="button" data-act="ai">Låt Claude sortera</button>` : ""}</div>` : ""}
     <div class="stats">
-      <div class="stat"><div class="lbl">Spent</div><div class="val">${fmt0.format(spent)}</div><div class="sub">${state.period === "all" && nMonths > 1 ? `${fmt0.format(spent / nMonths)} per month on average` : periodName}</div></div>
-      <div class="stat"><div class="lbl">Income</div><div class="val">${fmt0.format(income)}</div><div class="sub">${(n => n + (n === 1 ? " payment" : " payments") + " in")(list.filter(t => catOf(t).income).length)}</div></div>
-      <div class="stat"><div class="lbl">Left over</div><div class="val ${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "" : "−"}${fmt0.format(Math.abs(net))}</div><div class="sub">${income > 0 ? `${Math.round((net / income) * 100)}% of income` : "income minus spending"}</div></div>
+      <div class="stat"><div class="lbl">Utgifter</div><div class="val">${fmt0.format(spent)}</div><div class="sub">${state.period === "all" && nMonths > 1 ? `${fmt0.format(spent / nMonths)} per månad i snitt` : periodName}</div></div>
+      <div class="stat"><div class="lbl">Inkomster</div><div class="val">${fmt0.format(income)}</div><div class="sub">${(n => n + (n === 1 ? " inbetalning" : " inbetalningar"))(list.filter(t => catOf(t).income).length)}</div></div>
+      <div class="stat"><div class="lbl">Över</div><div class="val ${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "" : "−"}${fmt0.format(Math.abs(net))}</div><div class="sub">${income > 0 ? `${Math.round((net / income) * 100)} % av inkomsterna` : "inkomster minus utgifter"}</div></div>
     </div>
     <div class="grid2">
       <section class="panel">
-        <h2>Where the money went <span class="aside">${esc(periodName)}</span></h2>
+        <h2>Vart pengarna tog vägen <span class="aside">${esc(periodName)}</span></h2>
         ${rows.length ? `<div class="cats">${rows.map(([id, v]) => { const c = catById(id) || catById("uncategorized"); return `
           <button class="catrow" type="button" data-cat="${id}">
             <span class="name"><span class="dot" style="background:${c.color}"></span><span>${esc(c.name)}</span></span>
             <span class="amt num">${fmt0.format(v)}<small>${spent > 0 ? Math.round((v / spent) * 100) : 0}%</small></span>
             <span class="bar"><i style="width:${Math.max(1, (v / max) * 100)}%;background:${c.color}"></i></span>
-          </button>`; }).join("")}</div>` : `<p class="empty">No spending ${state.period === "all" ? "yet" : "this month"}.</p>`}
+          </button>`; }).join("")}</div>` : `<p class="empty">Inga utgifter ${state.period === "all" ? "än" : "den här månaden"}.</p>`}
       </section>
       <div class="stack">
         <section class="panel">${monthChart()}</section>
@@ -612,19 +614,19 @@ function niceMax(v) {
 }
 function monthChart() {
   const ms = months().slice(0, 12).reverse();
-  if (!ms.length) return `<h2>Month by month</h2><p class="empty">Nothing yet.</p>`;
+  if (!ms.length) return `<h2>Månad för månad</h2><p class="empty">Inget än.</p>`;
   const vals = ms.map(m => summarize(state.tx.filter(t => t.d.startsWith(m))).spent);
   const top = niceMax(Math.max(...vals));
   const grid = [1, 0.5, 0].map(f => `<div class="gl" style="bottom:${f * 100}%"><span class="num">${fmtShort.format(top * f)}</span></div>`).join("");
-  return `<h2>Month by month <span class="aside">spending, kr</span></h2>
+  return `<h2>Månad för månad <span class="aside">utgifter, kr</span></h2>
     <div class="chart">${grid}${ms.map((m, i) => `<button class="col ${state.period === m ? "sel" : ""}" type="button" data-month="${m}" title="${monthLabel(m, true)}: ${fmt0.format(vals[i])}" aria-label="${monthLabel(m, true)}: ${fmt0.format(vals[i])}"><i style="height:${Math.max(0, vals[i] / top) * 100}%"></i></button>`).join("")}</div>
     <div class="chart-x">${ms.map(m => `<span>${monthLabel(m, false)}</span>`).join("")}</div>
-    <p class="hint" style="margin:10px 0 0">Tap a month to see just that month.</p>`;
+    <p class="hint" style="margin:10px 0 0">Tryck på en månad för att se bara den.</p>`;
 }
 function biggest(list) {
   const top = list.filter(t => t.a < 0 && !catOf(t).ignore).sort((a, b) => a.a - b.a).slice(0, 5);
-  return `<h2>Biggest purchases</h2>${top.length ? `<div class="cats">${top.map(t => { const c = catOf(t); return `
-    <div class="catrow" style="cursor:default"><span class="name"><span class="dot" style="background:${c.color}"></span><span>${esc(t.t)}</span></span><span class="amt num">${fmt0.format(-t.a)}</span></div>`; }).join("")}</div>` : `<p class="empty">No purchases.</p>`}`;
+  return `<h2>Största köpen</h2>${top.length ? `<div class="cats">${top.map(t => { const c = catOf(t); return `
+    <div class="catrow" style="cursor:default"><span class="name"><span class="dot" style="background:${c.color}"></span><span>${esc(t.t)}</span></span><span class="amt num">${fmt0.format(-t.a)}</span></div>`; }).join("")}</div>` : `<p class="empty">Inga köp.</p>`}`;
 }
 function catOptions(selected) {
   return state.categories.map(c => `<option value="${c.id}" ${c.id === selected ? "selected" : ""}>${esc(c.name)}</option>`).join("");
@@ -640,23 +642,23 @@ function renderTx() {
   const total = list.reduce((s, t) => s + t.a, 0);
   viewEl.innerHTML = `
     <div class="toolbar">
-      <input class="inp" id="q" type="search" placeholder="Search, e.g. ICA or Spotify" value="${esc(state.filter.q)}" aria-label="Search transactions">
-      <select class="sel" id="catFilter" aria-label="Filter by category"><option value="all">All categories</option>${state.categories.map(c => `<option value="${c.id}" ${state.filter.cat === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
-      <span class="summary"><span class="num">${list.length}</span> transactions · <span class="num">${fmt2.format(total)}</span> kr</span>
+      <input class="inp" id="q" type="search" placeholder="Sök, t.ex. ICA eller Spotify" value="${esc(state.filter.q)}" aria-label="Sök transaktioner">
+      <select class="sel" id="catFilter" aria-label="Filtrera på kategori"><option value="all">Alla kategorier</option>${state.categories.map(c => `<option value="${c.id}" ${state.filter.cat === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select>
+      <span class="summary"><span class="num">${list.length}</span> transaktioner · <span class="num">${fmt2.format(total)}</span> kr</span>
     </div>
     <div class="tablewrap"><table class="tx">
-      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="a">Amount (kr)</th></tr></thead>
+      <thead><tr><th>Datum</th><th>Beskrivning</th><th>Kategori</th><th class="a">Belopp (kr)</th></tr></thead>
       <tbody id="txBody">${txRows(list)}</tbody>
     </table>
-    ${list.length > state.showRows ? `<div class="more"><button class="btn" type="button" data-act="more">Show ${Math.min(500, list.length - state.showRows)} more</button></div>` : ""}
-    ${list.length ? "" : `<p class="empty">${state.tx.length ? "No transactions match." : "Upload a file to see your transactions here."}</p>`}
+    ${list.length > state.showRows ? `<div class="more"><button class="btn" type="button" data-act="more">Visa ${Math.min(500, list.length - state.showRows)} till</button></div>` : ""}
+    ${list.length ? "" : `<p class="empty">${state.tx.length ? "Inga transaktioner matchar." : "Ladda upp en fil för att se dina transaktioner här."}</p>`}
     </div>`;
   const q = document.getElementById("q");
   q.addEventListener("input", () => {
     state.filter.q = q.value; state.showRows = 200;
     const l = filteredTx();
     document.getElementById("txBody").innerHTML = txRows(l);
-    document.querySelector(".toolbar .summary").innerHTML = `<span class="num">${l.length}</span> transactions · <span class="num">${fmt2.format(l.reduce((s, t) => s + t.a, 0))}</span> kr`;
+    document.querySelector(".toolbar .summary").innerHTML = `<span class="num">${l.length}</span> transaktioner · <span class="num">${fmt2.format(l.reduce((s, t) => s + t.a, 0))}</span> kr`;
   });
   document.getElementById("catFilter").addEventListener("change", e => { state.filter.cat = e.target.value; state.showRows = 200; renderTx(); });
 }
@@ -666,7 +668,7 @@ function txRows(list) {
     return `<tr data-id="${t.i}">
       <td class="d num">${t.d}</td>
       <td class="t">${esc(t.t)}</td>
-      <td class="c"><span class="catpick ${c.id === "uncategorized" ? "unc" : ""}"><span class="dot" style="background:${c.color}"></span><select data-tx="${t.i}" aria-label="Category for ${esc(t.t)}">${catOptions(c.id)}</select></span></td>
+      <td class="c"><span class="catpick ${c.id === "uncategorized" ? "unc" : ""}"><span class="dot" style="background:${c.color}"></span><select data-tx="${t.i}" aria-label="Kategori för ${esc(t.t)}">${catOptions(c.id)}</select></span></td>
       <td class="a num ${t.a > 0 ? "pos" : ""}">${t.a > 0 ? "+" : ""}${fmt2.format(t.a)}</td>
     </tr>`;
   }).join("");
@@ -678,33 +680,33 @@ function renderCats() {
   viewEl.innerHTML = `
     <div class="grid2">
       <section class="panel">
-        <h2>Categories</h2>
-        <p class="hint">Rename a category or change its colour. Removing one moves its transactions to Uncategorized. “Not counted” is for money you move between your own accounts or card bill payments, so they don't count as spending.</p>
+        <h2>Kategorier</h2>
+        <p class="hint">Byt namn på en kategori eller ändra dess färg. Tar du bort en kategori flyttas dess transaktioner till Okategoriserat. ”Räknas inte” är för pengar du flyttar mellan egna konton eller betalningar av kortfakturor, så att de inte räknas som utgifter.</p>
         <div class="catlist">${state.categories.map(c => `
           <div class="catedit">
-            <input type="color" value="${c.color}" data-color="${c.id}" aria-label="Colour for ${esc(c.name)}">
-            <input class="inp" value="${esc(c.name)}" data-rename="${c.id}" aria-label="Name" ${c.fixed ? "disabled" : ""}>
+            <input type="color" value="${c.color}" data-color="${c.id}" aria-label="Färg för ${esc(c.name)}">
+            <input class="inp" value="${esc(c.name)}" data-rename="${c.id}" aria-label="Namn" ${c.fixed ? "disabled" : ""}>
             <span class="meta num">${counts.get(c.id) || 0} · ${fmt0.format(Math.abs(sums.get(c.id) || 0))}</span>
-            ${c.fixed ? `<span></span>` : `<button class="btn ghost danger" type="button" data-del="${c.id}" aria-label="Remove ${esc(c.name)}">Remove</button>`}
+            ${c.fixed ? `<span></span>` : `<button class="btn ghost danger" type="button" data-del="${c.id}" aria-label="Ta bort ${esc(c.name)}">Ta bort</button>`}
           </div>`).join("")}</div>
         <form class="row" id="addCat" style="margin-top:14px">
-          <input class="inp" id="newCat" placeholder="New category, e.g. Pets" style="flex:1 1 200px" required>
-          <button class="btn primary" type="submit">Add category</button>
+          <input class="inp" id="newCat" placeholder="Ny kategori, t.ex. Husdjur" style="flex:1 1 200px" required>
+          <button class="btn primary" type="submit">Lägg till kategori</button>
         </form>
       </section>
       <div class="stack">
         <section class="panel">
-          <h2>Remembered shops <span class="aside">${rules.length}</span></h2>
-          <p class="hint">When you change a transaction's category, Pengakoll remembers the shop and sorts it the same way next time.</p>
-          <div class="rules">${rules.length ? rules.map(([k, id]) => { const c = catById(id); return c ? `<div class="rule"><code>${esc(k)}</code><span class="dot" style="background:${c.color}"></span><span>${esc(c.name)}</span><button class="btn ghost" type="button" data-unrule="${esc(k)}" aria-label="Forget ${esc(k)}">Forget</button></div>` : ""; }).join("") : `<p class="empty" style="padding:16px">Nothing remembered yet.</p>`}</div>
+          <h2>Ihågkomna butiker <span class="aside">${rules.length}</span></h2>
+          <p class="hint">När du ändrar kategori på en transaktion kommer Pengakoll ihåg butiken och sorterar den likadant nästa gång.</p>
+          <div class="rules">${rules.length ? rules.map(([k, id]) => { const c = catById(id); return c ? `<div class="rule"><code>${esc(k)}</code><span class="dot" style="background:${c.color}"></span><span>${esc(c.name)}</span><button class="btn ghost" type="button" data-unrule="${esc(k)}" aria-label="Glöm ${esc(k)}">Glöm</button></div>` : ""; }).join("") : `<p class="empty" style="padding:16px">Inget ihågkommet än.</p>`}</div>
         </section>
         <section class="panel">
-          <h2>Your data</h2>
-          <p class="status ${storage.mode === "account" ? "" : "local"}"><span class="dot"></span>${storage.mode === "account" ? "Saved to your Claude account. Only you can see it." : "Saved in this browser only. Export a backup to keep it safe."}</p>
+          <h2>Din data</h2>
+          <p class="status ${storage.mode === "account" ? "" : "local"}"><span class="dot"></span>${storage.mode === "account" ? "Sparas i ditt Claude-konto. Bara du kan se den." : "Sparas bara i den här webbläsaren. Ladda ner en säkerhetskopia för att inte förlora den."}</p>
           <div class="row" style="margin-top:12px">
-            ${downloadsApi ? `<button class="btn" type="button" data-act="export-csv">Export as CSV</button><button class="btn" type="button" data-act="export-json">Download backup</button>` : ""}
-            <button class="btn" type="button" data-act="upload">Restore backup</button>
-            <button class="btn danger" type="button" data-act="clear" id="clearBtn">Delete all transactions</button>
+            ${downloadsApi ? `<button class="btn" type="button" data-act="export-csv">Exportera som CSV</button><button class="btn" type="button" data-act="export-json">Ladda ner säkerhetskopia</button>` : ""}
+            <button class="btn" type="button" data-act="upload">Återställ säkerhetskopia</button>
+            <button class="btn danger" type="button" data-act="clear" id="clearBtn">Radera alla transaktioner</button>
           </div>
         </section>
       </div>
@@ -716,7 +718,7 @@ function renderCats() {
     const palette = ["#4f8fcf", "#d0743c", "#5aa36b", "#b65cb8", "#c99a2e", "#3aa8a0", "#d65a5a", "#7c6fd6"];
     const id = "c" + uid();
     state.categories.splice(state.categories.findIndex(c => c.id === "income"), 0, { id, name, color: palette[state.categories.length % palette.length] });
-    scheduleSave(); render(); toast(`Added ${name}.`);
+    scheduleSave(); render(); toast(`Lade till ${name}.`);
   });
 }
 
@@ -737,12 +739,12 @@ document.addEventListener("click", async e => {
   if (t.dataset.cat) { state.view = "tx"; state.filter = { q: "", cat: t.dataset.cat }; render(); window.scrollTo(0, 0); return; }
   if (t.dataset.month) { state.period = state.period === t.dataset.month ? "all" : t.dataset.month; render(); return; }
   if (t.dataset.del) {
-    if (!t.classList.contains("armed")) { t.classList.add("armed"); t.textContent = "Confirm"; setTimeout(() => { if (t.isConnected) { t.classList.remove("armed"); t.textContent = "Remove"; } }, 4000); return; }
+    if (!t.classList.contains("armed")) { t.classList.add("armed"); t.textContent = "Bekräfta"; setTimeout(() => { if (t.isConnected) { t.classList.remove("armed"); t.textContent = "Ta bort"; } }, 4000); return; }
     const id = t.dataset.del, c = catById(id);
     state.tx.forEach(x => { if (x.c === id) x.c = "uncategorized"; });
     for (const k in state.rules) if (state.rules[k] === id) delete state.rules[k];
     state.categories = state.categories.filter(x => x.id !== id);
-    scheduleSave(); render(); toast(`Removed ${c.name}.`);
+    scheduleSave(); render(); toast(`Tog bort ${c.name}.`);
     return;
   }
   if (t.dataset.unrule) { delete state.rules[t.dataset.unrule]; scheduleSave(); render(); return; }
@@ -754,8 +756,8 @@ document.addEventListener("click", async e => {
   else if (act === "export-csv") exportCsv();
   else if (act === "export-json") exportJson();
   else if (act === "clear") {
-    if (Date.now() - clearArmed > 4000) { clearArmed = Date.now(); t.classList.add("armed"); t.textContent = "Tap again to delete everything"; setTimeout(() => { if (t.isConnected) { t.classList.remove("armed"); t.textContent = "Delete all transactions"; } }, 4000); return; }
-    state.tx = []; state.isExample = false; scheduleSave(); render(); toast("All transactions deleted.");
+    if (Date.now() - clearArmed > 4000) { clearArmed = Date.now(); t.classList.add("armed"); t.textContent = "Tryck igen för att radera allt"; setTimeout(() => { if (t.isConnected) { t.classList.remove("armed"); t.textContent = "Radera alla transaktioner"; } }, 4000); return; }
+    state.tx = []; state.isExample = false; scheduleSave(); render(); toast("Alla transaktioner raderade.");
   }
 });
 document.addEventListener("change", e => {
@@ -776,12 +778,12 @@ function changeCategory(txId, catId) {
   if (row) { const c = catOf(tx); const pick = row.querySelector(".catpick"); pick.classList.toggle("unc", c.id === "uncategorized"); pick.querySelector(".dot").style.background = c.color; }
   const name = catById(catId).name;
   if (others.length) {
-    toast(`Moved to ${name}. Move ${others.length} other “${key}” too?`, "Move all", () => {
+    toast(`Flyttad till ${name}. Flytta ${others.length} till från ”${key}” också?`, "Flytta alla", () => {
       others.forEach(x => { x.c = catId; });
-      scheduleSave(); render(); toast(`Moved ${others.length + 1} transactions to ${name}.`);
+      scheduleSave(); render(); toast(`Flyttade ${others.length + 1} transaktioner till ${name}.`);
     });
   } else {
-    toast(`Moved to ${name}. Future “${key}” purchases will go there too.`);
+    toast(`Flyttad till ${name}. Framtida köp från ”${key}” hamnar där också.`);
   }
 }
 
@@ -818,11 +820,11 @@ async function sortWithClaude(btn) {
   const keys = [...new Set(unc.map(t => merchantKey(t.t)))].slice(0, 150);
   if (!keys.length) return;
   const names = state.categories.filter(c => c.id !== "uncategorized").map(c => c.name);
-  btn.disabled = true; btn.textContent = "Claude is sorting…";
+  btn.disabled = true; btn.textContent = "Claude sorterar…";
   try {
     const prompt = `You sort Swedish bank and card transactions into budget categories.
 Categories: ${JSON.stringify(names)}
-For each merchant text below, choose the single best category name from the list, copied exactly. If you really can't tell, use "Uncategorized".
+For each merchant text below, choose the single best category name from the list, copied exactly. If you really can't tell, use "${catById("uncategorized").name}".
 Merchants: ${JSON.stringify(keys)}
 Reply with only a JSON object mapping each merchant text to a category name.`;
     const result = await sampleApi.json(prompt, { modelTier: "quick" });
@@ -835,11 +837,11 @@ Reply with only a JSON object mapping each merchant text to a category name.`;
       unc.forEach(t => { if (merchantKey(t.t) === k) { t.c = id; moved++; } });
     }
     scheduleSave(); render();
-    toast(moved ? `Claude sorted ${moved} transactions. Check them in the Transactions tab.` : "Claude couldn't place any of them. You can sort them yourself.");
+    toast(moved ? `Claude sorterade ${moved} transaktioner. Kolla dem under fliken Transaktioner.` : "Claude kunde inte placera någon av dem. Du kan sortera dem själv.");
   } catch (e) {
-    btn.disabled = false; btn.textContent = "Let Claude sort them";
+    btn.disabled = false; btn.textContent = "Låt Claude sortera";
     if (e?.code === "not_granted") { sampleApi = null; render(); }
-    toast(e?.code === "rate_limited" ? "Claude is busy right now. Try again in a minute." : "Claude couldn't sort them this time. You can sort them yourself.");
+    toast(e?.code === "rate_limited" ? "Claude är upptagen just nu. Försök igen om en minut." : "Claude kunde inte sortera dem den här gången. Du kan sortera dem själv.");
   }
 }
 
@@ -853,25 +855,25 @@ async function exportJson() {
   save("pengakoll-backup.json", JSON.stringify({ app: "pengakoll", v: 1, categories: state.categories, rules: state.rules, tx: state.tx }));
 }
 async function save(filename, data) {
-  try { await downloadsApi.save({ filename, data }); toast(`Saved ${filename}.`); }
-  catch (e) { if (e?.code !== "declined") toast("Couldn't save the file here."); }
+  try { await downloadsApi.save({ filename, data }); toast(`Sparade ${filename}.`); }
+  catch (e) { if (e?.code !== "declined") toast("Kunde inte spara filen här."); }
 }
 async function importBackup(file) {
   try {
     const data = JSON.parse(await file.text());
     if (data.app !== "pengakoll" || !Array.isArray(data.tx)) throw new Error("not a Pengakoll backup");
-    modal(`<h3>Restore backup?</h3><p class="hint">This replaces your current ${state.isExample ? "example data" : state.tx.length + " transactions"} with the ${data.tx.length} transactions in ${esc(file.name)}.</p>
-      <div class="modal-actions"><button class="btn" id="rbNo" type="button">Cancel</button><button class="btn primary" id="rbYes" type="button">Restore</button></div>`);
+    modal(`<h3>Återställa säkerhetskopia?</h3><p class="hint">Det här ersätter ${state.isExample ? "exempeldatan" : "dina " + state.tx.length + " transaktioner"} med de ${data.tx.length} transaktionerna i ${esc(file.name)}.</p>
+      <div class="modal-actions"><button class="btn" id="rbNo" type="button">Avbryt</button><button class="btn primary" id="rbYes" type="button">Återställ</button></div>`);
     document.getElementById("rbNo").onclick = closeModal;
     document.getElementById("rbYes").onclick = () => {
       state.categories = data.categories?.length ? data.categories : structuredClone(DEFAULT_CATS);
       if (!catById("uncategorized")) state.categories.push(structuredClone(DEFAULT_CATS.at(-1)));
       state.rules = data.rules || {}; state.tx = data.tx; state.isExample = false;
-      closeModal(); scheduleSave(); render(); toast(`Restored ${data.tx.length} transactions.`);
+      closeModal(); scheduleSave(); render(); toast(`Återställde ${data.tx.length} transaktioner.`);
       if (queue.length) showMapping();
     };
   } catch (e) {
-    toast(`${file.name} isn't a Pengakoll backup.`);
+    toast(`${file.name} är inte en säkerhetskopia från Pengakoll.`);
   }
 }
 
@@ -884,6 +886,7 @@ function lsSet(v) { try { localStorage.setItem(LS_KEY, JSON.stringify(v)); retur
 function applyLoaded(d) {
   if (!d) return false;
   if (Array.isArray(d.categories) && d.categories.length) state.categories = d.categories;
+  for (const c of state.categories) { const def = DEFAULT_CATS.find(x => x.id === c.id); if (def && c.name === OLD_NAMES[c.id]) c.name = def.name; }
   if (!catById("uncategorized")) state.categories.push(structuredClone(DEFAULT_CATS.at(-1)));
   state.rules = d.rules || {};
   state.tx = (d.tx || []).sort((x, y) => y.d.localeCompare(x.d));
@@ -943,12 +946,12 @@ async function saveNow() {
       }
     } catch (e) {
       storage.mode = "local";
-      if (e?.code === "quota_exceeded") toast("Your account storage is full. Saving in this browser instead.");
+      if (e?.code === "quota_exceeded") toast("Lagringen i ditt konto är full. Sparar i den här webbläsaren i stället.");
       lsSet(payload);
       if (state.view === "cats") render();
     }
   } else if (!lsSet(payload)) {
-    toast("Couldn't save in this browser. Export a backup so you don't lose your changes.");
+    toast("Kunde inte spara i den här webbläsaren. Ladda ner en säkerhetskopia så att du inte förlorar dina ändringar.");
   }
   storage.saving = false;
   if (storage.again) { storage.again = false; saveNow(); }
